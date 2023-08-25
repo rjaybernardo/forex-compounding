@@ -127,8 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       // Calculate other results
-      const totalEarnings =
-        futureValue - startBalance - additionalContribution * totalMonths
+      const totalEarnings = futureValue - additionalContribution * totalMonths
       const percentageMonthly =
         (Math.pow(futureValue / startBalance, 1 / totalMonths) - 1) * 100
       const totalWeightedRateOfReturn = (futureValue / startBalance - 1) * 100
