@@ -84,14 +84,23 @@ document.addEventListener('DOMContentLoaded', function () {
     .addEventListener('click', function (event) {
       event.preventDefault()
 
+      // Log raw value
+      console.log(
+        'Raw value from initial balance input:',
+        document.getElementById('fc-start-balance-input').value
+      )
+
       // Utility function to safely get float value from input
       function getFloatValueFromInput(inputId) {
         let value = parseFloat(document.getElementById(inputId).value)
+        console.log(`Parsed value for ${inputId}:`, value) // Log parsed value
         return isNaN(value) ? 0 : value
       }
 
       // Extracting values using the utility function
       let principal = getFloatValueFromInput('fc-start-balance-input')
+      console.log('Principal after utility function:', principal) // Log the final value
+
       let rate = getFloatValueFromInput('fc-percentage-input') / 100
       let years = getFloatValueFromInput('fc-years-input')
       let months = getFloatValueFromInput('fc-months-input')
@@ -118,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
       let contributionPeriods =
         ((years * 12 + months) * contributionFrequency) / 12
 
-      // Compound interest formula: A = P(1 + r/n)^(nt) + PMT * (((1 + r/n)^(nt) - 1) * (n/r))
+      // Compound interest formula
       let futureValue =
         principal * Math.pow(1 + rate / compoundFrequency, totalPeriods) +
         additionalContributions *
