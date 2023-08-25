@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // Extracting values from the form
       let principal = parseFloat(
-        document.getElementById('fc-start-balance-input').value
+        document.getElementById('fc-start-balance-input').value || 0
       )
       let rate =
         parseFloat(document.getElementById('fc-percentage-input').value) / 100
@@ -126,12 +126,11 @@ document.addEventListener('DOMContentLoaded', function () {
       let totalEarnings =
         futureValue -
         (principal + additionalContributions * contributionPeriods)
-      let initialBalance = principal
       let additionalDeposits = additionalContributions * contributionPeriods
       let percentageMonthly = rate * 12 * 100
       let totalWeightedRateOfReturn =
-        (((futureValue - initialBalance - additionalDeposits) /
-          (initialBalance + additionalDeposits / 2)) *
+        (((futureValue - principal - additionalDeposits) /
+          (principal + additionalDeposits / 2)) *
           100) /
         years
 
@@ -144,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
       ).textContent = `Total Earnings: $${totalEarnings.toFixed(2)}`
       document.getElementById(
         'initialBalanceResult'
-      ).textContent = `Initial Balance: $${initialBalance.toFixed(2)}`
+      ).textContent = `Initial Balance: $${principal.toFixed(2)}`
       document.getElementById(
         'additionalDepositsResult'
       ).textContent = `Additional Deposits: $${additionalDeposits.toFixed(2)}`
