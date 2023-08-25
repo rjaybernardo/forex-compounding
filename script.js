@@ -76,6 +76,9 @@ document.addEventListener('DOMContentLoaded', function () {
       })
     })
   })
+
+  // ----------------------START FOREX COMPOUNDING --------------------------------
+
   document
     .getElementById('fc-form-submit')
     .addEventListener('click', function (event) {
@@ -138,6 +141,8 @@ document.addEventListener('DOMContentLoaded', function () {
         totalWeightedRateOfReturn.toFixed(2) +
         '%'
     })
+
+  // ----------------------END FOREX COMPOUNDING --------------------------------
 
   //Daily Compounding Tab Section
   // Tracking user's choice for including all days or just business days
