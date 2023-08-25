@@ -84,21 +84,25 @@ document.addEventListener('DOMContentLoaded', function () {
     .addEventListener('click', function (event) {
       event.preventDefault()
 
-      // Extracting values from the form
-      let principal = parseFloat(
-        document.getElementById('fc-start-balance-input').value || 0
-      )
-      let rate =
-        parseFloat(document.getElementById('fc-percentage-input').value) / 100
-      let years = parseFloat(document.getElementById('fc-years-input').value)
-      let months = parseFloat(document.getElementById('fc-months-input').value)
+      // Utility function to safely get float value from input
+      function getFloatValueFromInput(inputId) {
+        let value = parseFloat(document.getElementById(inputId).value)
+        return isNaN(value) ? 0 : value
+      }
+
+      // Extracting values using the utility function
+      let principal = getFloatValueFromInput('fc-start-balance-input')
+      let rate = getFloatValueFromInput('fc-percentage-input') / 100
+      let years = getFloatValueFromInput('fc-years-input')
+      let months = getFloatValueFromInput('fc-months-input')
       let compoundFrequency = parseFloat(
         document.getElementById('compound-interest-sidebar__compound-interval')
           .value
       )
-      let additionalContributions = parseFloat(
-        document.getElementById('fc-add-contri-input').value || 0
+      let additionalContributions = getFloatValueFromInput(
+        'fc-add-contri-input'
       )
+
       let contributionFrequencyMap = {
         weekly: 52,
         monthly: 12,
