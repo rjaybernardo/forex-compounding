@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document
     .getElementById('fc-form-submit')
     .addEventListener('click', function (event) {
-      event.preventDefault() // Prevent default action (like form submission)
+      event.preventDefault()
 
       // Extracting values from the form
       const startBalance = parseFloat(
@@ -104,17 +104,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
       let totalMonths = years * 12 + months
 
-      // Calculate future value using compound interest formula
-      let futureValue =
+      // Compound the initial balance
+      let compoundedStartBalance =
         startBalance *
         Math.pow(
           1 + percentage / compoundingFrequency,
           compoundingFrequency * (totalMonths / 12)
         )
 
-      // If there are additional contributions, factor them into the future value
+      // Calculate future value of additional contributions
+      let contributionFutureValue = 0
       if (additionalContribution && !isNaN(additionalContribution)) {
-        let contributionFutureValue = 0
         for (let i = 0; i < totalMonths; i++) {
           contributionFutureValue +=
             additionalContribution *
@@ -123,11 +123,14 @@ document.addEventListener('DOMContentLoaded', function () {
               compoundingFrequency * ((totalMonths - i) / 12)
             )
         }
-        futureValue += contributionFutureValue
       }
 
+      // Sum of compounded start balance and contributions
+      let futureValue = compoundedStartBalance + contributionFutureValue
+
       // Calculate other results
-      const totalEarnings = futureValue - additionalContribution * totalMonths
+      const totalEarnings =
+        futureValue - startBalance - additionalContribution * totalMonths
       const percentageMonthly =
         (Math.pow(futureValue / startBalance, 1 / totalMonths) - 1) * 100
       const totalWeightedRateOfReturn = (futureValue / startBalance - 1) * 100
