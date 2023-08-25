@@ -88,6 +88,8 @@ document.addEventListener('DOMContentLoaded', function () {
       const startBalance = parseFloat(
         document.getElementById('fc-start-balance-input').value
       )
+      console.log('Start Balance:', startBalance)
+
       const percentage =
         parseFloat(document.getElementById('fc-percentage-input').value) / 100
       const years = parseFloat(document.getElementById('fc-years-input').value)
