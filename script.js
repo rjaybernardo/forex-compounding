@@ -79,88 +79,97 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // ----------------------START FOREX COMPOUNDING --------------------------------
 
-  document
-    .getElementById('fc-form-submit')
-    .addEventListener('click', function (event) {
-      event.preventDefault()
+  document.addEventListener('DOMContentLoaded', function () {
+    // Ensure the input has a default value for testing
+    const balanceInput = document.getElementById('fc-start-balance-input')
+    if (!balanceInput.value) {
+      balanceInput.value = '1000'
+    }
 
-      // Extracting values from the form
-      const startBalance = parseFloat(
-        document.getElementById('fc-start-balance-input').value
-      )
-      console.log('Start Balance:', startBalance)
+    document
+      .getElementById('fc-form-submit')
+      .addEventListener('click', function (event) {
+        event.preventDefault()
 
-      const percentage =
-        parseFloat(document.getElementById('fc-percentage-input').value) / 100
-      const years = parseFloat(document.getElementById('fc-years-input').value)
-      const months = parseFloat(
-        document.getElementById('fc-months-input').value
-      )
-      const compoundingFrequency = parseFloat(
-        document.getElementById('compound-interest-sidebar__compound-interval')
-          .value
-      )
-      const additionalContribution = parseFloat(
-        document.getElementById('fc-add-contri-input').value
-      )
-
-      let totalMonths = years * 12 + months
-
-      // Compound the initial balance
-      let compoundedStartBalance =
-        startBalance *
-        Math.pow(
-          1 + percentage / compoundingFrequency,
-          compoundingFrequency * (totalMonths / 12)
+        // Extracting values from the form
+        const startBalance = parseFloat(
+          document.getElementById('fc-start-balance-input').value
         )
 
-      // Calculate future value of additional contributions
-      let contributionFutureValue = 0
-      if (additionalContribution && !isNaN(additionalContribution)) {
-        for (let i = 0; i < totalMonths; i++) {
-          contributionFutureValue +=
-            additionalContribution *
-            Math.pow(
-              1 + percentage / compoundingFrequency,
-              compoundingFrequency * ((totalMonths - i) / 12)
-            )
+        const percentage =
+          parseFloat(document.getElementById('fc-percentage-input').value) / 100
+        const years = parseFloat(
+          document.getElementById('fc-years-input').value
+        )
+        const months = parseFloat(
+          document.getElementById('fc-months-input').value
+        )
+        const compoundingFrequency = parseFloat(
+          document.getElementById(
+            'compound-interest-sidebar__compound-interval'
+          ).value
+        )
+        const additionalContribution = parseFloat(
+          document.getElementById('fc-add-contri-input').value
+        )
+
+        let totalMonths = years * 12 + months
+
+        // Compound the initial balance
+        let compoundedStartBalance =
+          startBalance *
+          Math.pow(
+            1 + percentage / compoundingFrequency,
+            compoundingFrequency * (totalMonths / 12)
+          )
+
+        // Calculate future value of additional contributions
+        let contributionFutureValue = 0
+        if (additionalContribution && !isNaN(additionalContribution)) {
+          for (let i = 0; i < totalMonths; i++) {
+            contributionFutureValue +=
+              additionalContribution *
+              Math.pow(
+                1 + percentage / compoundingFrequency,
+                compoundingFrequency * ((totalMonths - i) / 12)
+              )
+          }
         }
-      }
 
-      // Sum of compounded start balance and contributions
-      let futureValue = compoundedStartBalance + contributionFutureValue
+        // Sum of compounded start balance and contributions
+        let futureValue = compoundedStartBalance + contributionFutureValue
 
-      // Calculate other results
-      const totalEarnings =
-        futureValue - startBalance - additionalContribution * totalMonths
-      const percentageMonthly =
-        (Math.pow(futureValue / startBalance, 1 / totalMonths) - 1) * 100
-      const totalWeightedRateOfReturn = (futureValue / startBalance - 1) * 100
+        // Calculate other results
+        const totalEarnings = futureValue - additionalContribution * totalMonths
+        const percentageMonthly =
+          (Math.pow(futureValue / startBalance, 1 / totalMonths) - 1) * 100
+        const totalWeightedRateOfReturn = (futureValue / startBalance - 1) * 100
 
-      // Display results
-      document.getElementById(
-        'futureValueResult'
-      ).innerText = `Future Investment: $${futureValue.toFixed(2)}`
-      document.getElementById(
-        'totalEarningsResult'
-      ).innerText = `Total Earnings: $${totalEarnings.toFixed(2)}`
-      document.getElementById(
-        'initialBalanceResult'
-      ).innerText = `Initial Balance: $${startBalance.toFixed(2)}`
-      document.getElementById(
-        'additionalDepositsResult'
-      ).innerText = `Additional Deposits: $${(
-        additionalContribution * totalMonths
-      ).toFixed(2)}`
-      document.getElementById(
-        'percentageMonthlyResult'
-      ).innerText = `Percentage Monthly: ${percentageMonthly.toFixed(2)}%`
-      document.getElementById(
-        'totalWeightedRateOfReturnResult'
-      ).innerText = `Total Weighted Rate of Return: ${totalWeightedRateOfReturn.toFixed(
-        2
-      )}%`
-    })
+        // Display results
+        document.getElementById(
+          'futureValueResult'
+        ).innerText = `Future Investment: $${futureValue.toFixed(2)}`
+        document.getElementById(
+          'totalEarningsResult'
+        ).innerText = `Total Earnings: $${totalEarnings.toFixed(2)}`
+        document.getElementById(
+          'initialBalanceResult'
+        ).innerText = `Initial Balance: $${startBalance.toFixed(2)}`
+        document.getElementById(
+          'additionalDepositsResult'
+        ).innerText = `Additional Deposits: $${(
+          additionalContribution * totalMonths
+        ).toFixed(2)}`
+        document.getElementById(
+          'percentageMonthlyResult'
+        ).innerText = `Percentage Monthly: ${percentageMonthly.toFixed(2)}%`
+        document.getElementById(
+          'totalWeightedRateOfReturnResult'
+        ).innerText = `Total Weighted Rate of Return: ${totalWeightedRateOfReturn.toFixed(
+          2
+        )}%`
+      })
+  })
 
   // ----------------------END FOREX COMPOUNDING --------------------------------
 
