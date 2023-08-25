@@ -250,4 +250,65 @@ document.addEventListener('DOMContentLoaded', function () {
     endDateBlock.style.display = 'block'
     timePeriodBlock.style.display = 'none'
   })
+  //SIMPLE INTEREST
+  document
+    .getElementById('si-form-submit')
+    .addEventListener('click', function (event) {
+      event.preventDefault() // Prevent the form from submitting
+
+      // Get the values from the form
+      const P = parseFloat(document.getElementById('si-starting-balance').value)
+      let r =
+        parseFloat(
+          document.getElementById('simple-interest-sidebar__interest-rate')
+            .value
+        ) / 100
+      const rateType = document.getElementById(
+        'simple-interest-sidebar__rate-select'
+      ).value
+
+      if (rateType == '12') {
+        // Convert monthly rate to yearly
+        r = r * 12
+      }
+
+      let t // Time in years
+
+      // Calculate time based on user's choice of time period or end date
+      if (
+        document.getElementById('si-time-period').classList.contains('active')
+      ) {
+        const years =
+          parseInt(document.getElementById('field-years-input').value) || 0
+        const months =
+          (parseInt(document.getElementById('field-months-input').value) || 0) /
+          12
+        const weeks =
+          (parseInt(document.getElementById('field-weeks-input').value) || 0) /
+          52
+        const days =
+          (parseInt(document.getElementById('field-days-input').value) || 0) /
+          365
+        t = years + months + weeks + days
+      } else {
+        const startDate = new Date(document.getElementById('si-start').value)
+        const endDate = new Date(document.getElementById('si-end').value)
+        t = (endDate - startDate) / (1000 * 60 * 60 * 24 * 365) // Convert milliseconds to years
+      }
+
+      // Calculate simple interest and final balance
+      const I = P * r * t
+      const F = P + I
+
+      // Embed results into the Webflow embed element
+      const resultsEmbed = document.getElementById('simpleInterestResultsEmbed')
+      resultsEmbed.innerHTML = `
+        <h2>Simple Interest Results</h2>
+        <p>Final Balance: $${F.toFixed(2)}</p>
+        <p>Interest Accrued: $${I.toFixed(2)}</p>
+        <p>Initial Balance: $${P.toFixed(2)}</p>
+        <p>Monthly Interest: $${(I / (t * 12)).toFixed(2)}</p>
+        <p>End Date: ${endDate.toISOString().slice(0, 10)}</p>
+    `
+    })
 })
