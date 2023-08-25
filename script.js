@@ -82,97 +82,86 @@ document.addEventListener('DOMContentLoaded', function () {
   document
     .getElementById('fc-form-submit')
     .addEventListener('click', function (event) {
-      event.preventDefault()
+      event.preventDefault() // Prevent default action (like form submission)
 
-      // Log raw value
-      console.log(
-        'Raw value from initial balance input:',
+      // Extracting values from the form
+      const startBalance = parseFloat(
         document.getElementById('fc-start-balance-input').value
       )
-
-      // Utility function to safely get float value from input
-      function getFloatValueFromInput(inputId) {
-        let value = parseFloat(document.getElementById(inputId).value)
-        console.log(`Parsed value for ${inputId}:`, value) // Log parsed value
-        return isNaN(value) ? 0 : value
-      }
-
-      // Extracting values using the utility function
-      let principal = getFloatValueFromInput('fc-start-balance-input')
-      console.log('Principal after utility function:', principal) // Log the final value
-
-      let rate = getFloatValueFromInput('fc-percentage-input') / 100
-      let years = getFloatValueFromInput('fc-years-input')
-      let months = getFloatValueFromInput('fc-months-input')
-      let compoundFrequency = parseFloat(
+      const percentage =
+        parseFloat(document.getElementById('fc-percentage-input').value) / 100
+      const years = parseFloat(document.getElementById('fc-years-input').value)
+      const months = parseFloat(
+        document.getElementById('fc-months-input').value
+      )
+      const compoundingFrequency = parseFloat(
         document.getElementById('compound-interest-sidebar__compound-interval')
           .value
       )
-      let additionalContributions = getFloatValueFromInput(
-        'fc-add-contri-input'
+      const additionalContribution = parseFloat(
+        document.getElementById('fc-add-contri-input').value
       )
 
-      let contributionFrequencyMap = {
-        weekly: 52,
-        monthly: 12,
-        quarterly: 4,
-        yearly: 1,
-      }
-      let contributionFrequency =
-        contributionFrequencyMap[
-          document.getElementById('fc-add-contri-select').value
-        ]
+      let totalMonths = years * 12 + months
 
-      let totalPeriods = ((years * 12 + months) * compoundFrequency) / 12
-      let contributionPeriods =
-        ((years * 12 + months) * contributionFrequency) / 12
-
-      // Compound interest formula
+      // Calculate future value using compound interest formula
       let futureValue =
-        principal * Math.pow(1 + rate / compoundFrequency, totalPeriods) +
-        additionalContributions *
-          (((Math.pow(1 + rate / compoundFrequency, totalPeriods) - 1) *
-            compoundFrequency) /
-            rate)
+        startBalance *
+        Math.pow(
+          1 + percentage / compoundingFrequency,
+          compoundingFrequency * (totalMonths / 12)
+        )
 
-      // Calculate other values
-      let totalEarnings =
-        futureValue -
-        (principal + additionalContributions * contributionPeriods)
-      let additionalDeposits = additionalContributions * contributionPeriods
-      let percentageMonthly = rate * 12 * 100
-      let totalWeightedRateOfReturn =
-        (((futureValue - principal - additionalDeposits) /
-          (principal + additionalDeposits / 2)) *
-          100) /
-        years
+      // If there are additional contributions, factor them into the future value
+      if (additionalContribution && !isNaN(additionalContribution)) {
+        let contributionFutureValue = 0
+        for (let i = 0; i < totalMonths; i++) {
+          contributionFutureValue +=
+            additionalContribution *
+            Math.pow(
+              1 + percentage / compoundingFrequency,
+              compoundingFrequency * ((totalMonths - i) / 12)
+            )
+        }
+        futureValue += contributionFutureValue
+      }
 
-      // Display the results
+      // Calculate other results
+      const totalEarnings =
+        futureValue - startBalance - additionalContribution * totalMonths
+      const percentageMonthly =
+        (Math.pow(futureValue / startBalance, 1 / totalMonths) - 1) * 100
+      const totalWeightedRateOfReturn = (futureValue / startBalance - 1) * 100
+
+      // Display results
       document.getElementById(
         'futureValueResult'
-      ).textContent = `Future Investment: $${futureValue.toFixed(2)}`
+      ).innerText = `Future Investment: $${futureValue.toFixed(2)}`
       document.getElementById(
         'totalEarningsResult'
-      ).textContent = `Total Earnings: $${totalEarnings.toFixed(2)}`
+      ).innerText = `Total Earnings: $${totalEarnings.toFixed(2)}`
       document.getElementById(
         'initialBalanceResult'
-      ).textContent = `Initial Balance: $${principal.toFixed(2)}`
+      ).innerText = `Initial Balance: $${startBalance.toFixed(2)}`
       document.getElementById(
         'additionalDepositsResult'
-      ).textContent = `Additional Deposits: $${additionalDeposits.toFixed(2)}`
+      ).innerText = `Additional Deposits: $${(
+        additionalContribution * totalMonths
+      ).toFixed(2)}`
       document.getElementById(
         'percentageMonthlyResult'
-      ).textContent = `Percentage Monthly: ${percentageMonthly.toFixed(2)}%`
+      ).innerText = `Percentage Monthly: ${percentageMonthly.toFixed(2)}%`
       document.getElementById(
         'totalWeightedRateOfReturnResult'
-      ).textContent = `Total Weighted Rate of Return: ${totalWeightedRateOfReturn.toFixed(
+      ).innerText = `Total Weighted Rate of Return: ${totalWeightedRateOfReturn.toFixed(
         2
       )}%`
     })
 
   // ----------------------END FOREX COMPOUNDING --------------------------------
 
-  //Daily Compounding Tab Section
+  // ----------------------START DAILY COMPOUNDING --------------------------------
+
   // Tracking user's choice for including all days or just business days
   let includeAllDays = true
 
@@ -258,6 +247,7 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('initialBalanceResult').innerText =
         'Initial Balance: $' + initialP.toFixed(2)
     })
+  // ----------------------END DAILY COMPOUNDING --------------------------------
 
   //TOGGLE SIMPLE INTEREST
 
